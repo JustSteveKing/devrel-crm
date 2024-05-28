@@ -23,11 +23,11 @@ final class ContactServiceTest extends TestCase
     #[Test]
     public function it_can_get_all_contacts(): void
     {
-        Contact::factory()->count(10)->create();
+        Contact::factory()->count(10)->for(Company::factory()->create())->create();
 
-        foreach ($this->service()->all() as $contact) {
+        foreach ($this->service()->all(['company']) as $contact) {
             $this->assertInstanceOf(
-                expected: ContactEntity::class,
+                expected: ContactAggregate::class,
                 actual: $contact,
             );
         }

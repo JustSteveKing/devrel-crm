@@ -52,7 +52,7 @@ final readonly class ContactService
     public function all(): Collection
     {
         return $this->repository->all()->map(
-            ContactEntity::fromEloquent(...)
+            callback: ContactEntity::fromEloquent(...)
         );
     }
 

@@ -47,13 +47,18 @@ final readonly class ContactService
     }
 
     /**
-     * @return Collection<ContactEntity>
+     * @return Collection<ContactAggregate>
      */
-    public function all(): Collection
+    public function all(array $with = []): Collection
     {
-        return $this->repository->all()->map(
-            callback: fn (Contact $contact): ContactEntity => ContactEntity::fromEloquent(
-                contact: $contact,
+        return $this->repository->all($with)->map(
+            callback: fn (Contact $contact): ContactAggregate => new ContactAggregate(
+                contact: ContactEntity::fromEloquent(
+                    contact: $contact,
+                ),
+                company: CompanyEntity::fromEloquent(
+                    company: $contact->company,
+                ),
             ),
         );
     }

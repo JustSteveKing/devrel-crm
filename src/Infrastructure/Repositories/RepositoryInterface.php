@@ -15,7 +15,7 @@ use Infrastructure\Entities\DomainEntity;
  */
 interface RepositoryInterface
 {
-    public function all(): Collection;
+    public function all(array $with = []): Collection;
 
     public function find(string $id, array $with = []): null|object;
 

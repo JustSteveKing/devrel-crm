@@ -17,9 +17,11 @@ abstract class Repository implements RepositoryInterface
     ) {
     }
 
-    public function all(): Collection
+    public function all(array $with = []): Collection
     {
-        return $this->query->get();
+        return $this->query->with(
+            relations: $with,
+        )->get();
     }
 
     public function query(Builder $builder): Repository

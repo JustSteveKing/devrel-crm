@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\Email;
 use App\Casts\Name;
-use App\DataObjects\NameObject;
 use App\Models\Concerns\HasNotes;
+use App\Observers\ContactObserver;
 use Carbon\CarbonInterface;
+use Domains\Network\ValueObjects\NameObject;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -20,7 +23,7 @@ use Illuminate\Notifications\Notifiable;
 /**
  * @property string $id
  * @property NameObject $name
- * @property null|string $email
+ * @property Email $email
  * @property AsCollection $socials
  * @property null|string $role
  * @property null|string $pronouns
@@ -34,6 +37,7 @@ use Illuminate\Notifications\Notifiable;
  * @property Collection<Interaction> $interactions
  * @property Collection<Note> $notes
  */
+#[ObservedBy(classes: ContactObserver::class)]
 final class Contact extends Model
 {
     use HasFactory;
@@ -85,6 +89,7 @@ final class Contact extends Model
     {
         return [
             'name' => Name::class,
+            'email' => Email::class,
             'socials' => AsCollection::class,
             'birthday' => 'date',
         ];

@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Casts;
 
-use App\DataObjects\NameObject;
+use Domains\Network\ValueObjects\NameObject;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
+use JsonException;
+use function is_string;
+use function json_decode;
+use function json_encode;
 
 final class Name implements CastsAttributes
 {
@@ -19,28 +24,45 @@ final class Name implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): NameObject
     {
+        $name = json_decode(
+            json: $value,
+            associative: true,
+            flags: JSON_THROW_ON_ERROR,
+        );
+
         return new NameObject(
-            first: $attributes['first'],
-            middle: $attributes['middle'],
-            last: $attributes['last'],
-            preferred: $attributes['preferred'],
+            first: $name['name']['first'],
+            middle: $name['name']['middle'],
+            last: $name['name']['last'],
+            preferred: $name['name']['preferred'],
         );
     }
 
     /**
      * @param Model $model
      * @param string $key
-     * @param NameObject $value
+     * @param NameObject|string $value
      * @param array $attributes
-     * @return array{first:string,middle:null|string,last:null|string,preferred:string}
+     * @return string
+     * @throws JsonException
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): array
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return [
-            'first' => $value->first,
-            'middle' => $value->middle,
-            'last' => $value->last,
-            'preferred' => $value->preferred,
-        ];
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if ( ! $value instanceof NameObject) {
+            throw new InvalidArgumentException(
+                message: 'Value must be an instance of Name Object',
+            );
+        }
+
+        return json_encode(
+            value: [
+                $key => $value,
+            ],
+            flags: JSON_THROW_ON_ERROR,
+        );
     }
 }

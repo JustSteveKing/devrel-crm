@@ -17,7 +17,12 @@ return Application::configure(
 )->withMiddleware(
     callback: function (Middleware $middleware): void {
         $middleware->api(prepend: [
+            App\Http\Middleware\DeviceIdentifier::class,
             Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            '/*',
         ]);
 
         $middleware->alias([

@@ -13,7 +13,7 @@ return new class () extends Migration {
             $table->ulid('id')->primary();
 
             $table->json('name');
-            $table->string('email')->nullable();
+            $table->json('email')->nullable();
             $table->json('socials')->nullable();
             $table->string('role')->nullable();
             $table->string('pronouns')->nullable();

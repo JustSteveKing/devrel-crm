@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Contact;
 use App\Models\User;
+use Domains\Network\ValueObjects\NameObject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,12 +19,12 @@ final class ContactFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => [
-                'first' => $this->faker->firstName(),
-                'middle' => $this->faker->firstName(),
-                'last' => $this->faker->lastName(),
-                'preferred' => $username = $this->faker->userName(),
-            ],
+            'name' => new NameObject(
+                first: $this->faker->firstName(),
+                middle: $this->faker->firstName(),
+                last: $this->faker->lastName(),
+                preferred: $username = $this->faker->userName(),
+            ),
             'email' => $this->faker->companyEmail(),
             'socials' => [
                 'twitter' => $username,

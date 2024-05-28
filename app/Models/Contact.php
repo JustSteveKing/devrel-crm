@@ -6,12 +6,15 @@ namespace App\Models;
 
 use App\Casts\Name;
 use App\DataObjects\NameObject;
+use App\Models\Concerns\HasNotes;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 /**
@@ -28,10 +31,13 @@ use Illuminate\Notifications\Notifiable;
  * @property null|CarbonInterface $updated_at
  * @property Company $company
  * @property User $owner
+ * @property Collection<Interaction> $interactions
+ * @property Collection<Note> $notes
  */
 final class Contact extends Model
 {
     use HasFactory;
+    use HasNotes;
     use HasUlids;
     use Notifiable;
 
@@ -62,6 +68,15 @@ final class Contact extends Model
         return $this->belongsTo(
             related: User::class,
             foreignKey: 'user_id',
+        );
+    }
+
+    /** @return HasMany<Interaction> */
+    public function interactions(): HasMany
+    {
+        return $this->hasMany(
+            related: Interaction::class,
+            foreignKey: 'contact_id',
         );
     }
 

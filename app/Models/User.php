@@ -28,6 +28,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property Collection<PersonalAccessToken> $tokens
  * @property Collection<Contact> $contacts
  * @property Collection<Company> $companies
+ * @property Collection<Note> $notes
  */
 final class User extends Authenticatable implements MustVerifyEmail
 {
@@ -65,6 +66,15 @@ final class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(
             related: Company::class,
+            foreignKey: 'user_id',
+        );
+    }
+
+    /** @return HasMany<Note> */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(
+            related: Note::class,
             foreignKey: 'user_id',
         );
     }
